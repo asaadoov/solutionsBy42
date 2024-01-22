@@ -1,6 +1,6 @@
-Certainly! Here's the README in Markdown format:
 
-```markdown
+
+
 # Ansible Role: Passbolt
 
 ![Passbolt Logo](https://www.passbolt.com/images/passbolt_logo.png)
@@ -98,4 +98,3 @@ If `passbolt_backup_enabled` is set to true, automated backups are scheduled dai
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
