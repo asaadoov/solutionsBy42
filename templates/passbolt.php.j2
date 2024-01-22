@@ -1,0 +1,30 @@
+# passbolt/templates/passbolt.php.j2
+
+<?php
+return [
+    'Datasources' => [
+        'default' => [
+            'host' => '{{ passbolt_database_host | default("localhost") }}',
+            'username' => '{{ passbolt_database_user }}',
+            'password' => '{{ passbolt_database_password }}',
+            'database' => '{{ passbolt_database_name }}',
+        ],
+    ],
+    'passbolt' => [
+        'passbolt.email' => [
+            'host' => 'your_smtp_host',
+            'port' => 587,
+            'username' => 'your_smtp_username',
+            'password' => 'your_smtp_password',
+            'tls' => true,
+        ],
+        'passbolt.api' => [
+            'host' => 'api.passbolt.local',
+        ],
+        'passbolt.plugins' => [
+            'install' => [
+                'security' => true,
+            ],
+        ],
+    ],
+];

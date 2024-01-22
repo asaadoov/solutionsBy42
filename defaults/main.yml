@@ -1,0 +1,11 @@
+---
+# defaults file for passbolt
+# passbolt/defaults/main.yml
+
+passbolt_database_user: passbolt_user
+passbolt_database_password: passbolt_password
+passbolt_database_name: passbolt_db
+passbolt_app_key: 'your_generated_app_key'
+passbolt_security_salt: 'your_generated_security_salt'
+passbolt_ssl_enabled: false
+passbolt_backup_enabled: true

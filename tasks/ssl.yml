@@ -1,0 +1,10 @@
+# passbolt/tasks/ssl.yml
+
+- name: Generate self-signed SSL certificate
+  openssl_certificate:
+    path: "/etc/nginx/ssl/{{ ansible_fqdn }}.crt"
+    privatekey_path: "/etc/nginx/ssl/{{ ansible_fqdn }}.key"
+    owner: root
+    group: root
+    mode: '0600'
+  notify: Reload Nginx

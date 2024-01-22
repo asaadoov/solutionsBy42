@@ -1,0 +1,13 @@
+---
+# handlers file for passbolt
+# passbolt/handlers/main.yml
+
+- name: Reload Nginx
+  systemd:
+    name: nginx
+    state: reloaded
+
+- name: Reload PHP
+  systemd:
+    name: php7.4-fpm
+    state: restarted

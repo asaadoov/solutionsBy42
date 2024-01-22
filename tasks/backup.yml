@@ -1,0 +1,17 @@
+# passbolt/tasks/backup.yml
+
+- name: Create backup directory
+  file:
+    path: /var/www/passbolt/backups
+    state: directory
+    owner: www-data
+    group: www-data
+
+- name: Schedule automated backups
+  cron:
+    name: "Passbolt Backup"
+    job: "/usr/bin/expect /var/www/passbolt/bin/cake passbolt backup"
+    cron_file: "passbolt_backup"
+    user: www-data
+    minute: "0"
+    hour: "3"

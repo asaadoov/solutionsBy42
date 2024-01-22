@@ -1,0 +1,78 @@
+---
+# tasks file for passbolt
+# passbolt/tasks/main.yml
+
+- name: Update package lists
+  apt:
+    update_cache: yes
+
+- name: Install Passbolt dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - nginx
+    - gnupg
+    - php7.4-cli
+    - php7.4-fpm
+    - php7.4-gnupg
+    - php7.4-mbstring
+    - php7.4-mysql
+    - php7.4-xml
+    - php7.4-curl
+    - php7.4-intl
+    - php7.4-gd
+    - php7.4-zip
+    - mariadb-server
+    - expect  # Required for automated backups
+
+- name: Install MySQL Python module
+  apt:
+    name: python3-mysqldb
+    state: present
+
+- name: Download and install Composer
+  command: >
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  args:
+    creates: /usr/local/bin/composer
+
+- name: Create Passbolt directory
+  file:
+    path: /var/www/passbolt
+    state: directory
+    owner: www-data
+    group: www-data
+
+- name: Configure Nginx for Passbolt
+  template:
+    src: passbolt.nginx.conf.j2
+    dest: /etc/nginx/sites-available/passbolt
+  notify: Reload Nginx
+
+- name: Enable Passbolt site
+  file:
+    src: /etc/nginx/sites-available/passbolt
+    dest: /etc/nginx/sites-enabled/passbolt
+  notify: Reload Nginx
+
+- name: Set up Passbolt database
+  command: >
+    su -s /bin/bash -c "bin/cake passbolt install --db-host=localhost --db-name={{ passbolt_database_name }} --db-user={{ passbolt_database_user }} --db-pass={{ passbolt_database_password }} --admin={{ ansible_user }}" www-data
+  args:
+    chdir: /var/www/passbolt
+  when: passbolt_database_password is defined and passbolt_database_user is defined and passbolt_database_name is defined
+
+- name: Generate Passbolt configuration file
+  template:
+    src: passbolt.php.j2
+    dest: /var/www/passbolt/config/passbolt.php
+  notify: Reload PHP
+
+- name: Set up SSL/TLS for Passbolt
+  include_tasks: ssl.yml
+  when: passbolt_ssl_enabled
+
+- name: Set up automated backups
+  include_tasks: backup.yml
+  when: passbolt_backup_enabled
